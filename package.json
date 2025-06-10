@@ -8,11 +8,33 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
-    "dev": "node --watch src/app.js"
+    "dev": "node --watch src/app.js",
+    "lint": "eslint . --ext .js,mjs,cjs",
+    "format": "prettier --write .",
+    "lint-staged": "npx lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0"
+  },
+  "lint-staged": {  
+    "*.{js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
 }
