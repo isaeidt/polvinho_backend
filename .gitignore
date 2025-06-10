@@ -1,0 +1,15 @@
+# Ignora a pasta de módulos do Node.js
+node_modules/
+
+# Ignora o arquivo de variáveis de ambiente
+.env
+
+# Ignora logs de debug do NPM
+npm-debug.log
+npm-debug.log*
+
+# Ignora arquivos de sistema do macOS (se estiver usando Mac)
+.DS_Store
+
+# Ignora quaisquer outros arquivos de log que possam ser gerados
+*.log
