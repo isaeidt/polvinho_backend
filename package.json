@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/app.js",
+    "start": "node --watch src/app.js",
     "lint": "eslint . --ext .js,mjs,cjs",
     "format": "prettier --write .",
     "lint-staged": "npx lint-staged"

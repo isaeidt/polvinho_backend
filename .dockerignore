@@ -1,0 +1,9 @@
+
+*.log
+node_modules/
+.tmp/
+.cache/
+.env
+.git/
+.gitignore
+.vscode/
