@@ -1,16 +1,31 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  app:
+    container_name: polvinho_app
+    build: .
     ports:
       - "3000:3000"
-    environment:
-      PORT: 3000 
-     
     volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm run start
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/polvinho
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: mongo_db
+    image: mongo:7.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+volumes:
+  mongodata:
+
+#docker-compose up --build -d     cria a imagem e não trava o terminal por causa do -d
+# docker-compose logs -f          ve os logs
+#docker-compose down              apaga a imagem

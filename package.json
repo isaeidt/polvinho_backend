@@ -2,6 +2,7 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "mongodb": "^6.17.0",
     "mongoose": "^8.15.1"
   },
   "name": "polvinho_backend",
@@ -30,7 +31,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0"
   },
-  "lint-staged": {  
+  "lint-staged": {
     "*.{js,mjs,cjs}": [
       "eslint --fix",
       "prettier --write",
