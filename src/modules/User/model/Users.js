@@ -10,7 +10,7 @@ const UsersSchema = new Schema(
 		registration: { type: String, required: true, unique: true },
 		password_hash: { type: String, required: true },
 		role: { type: String, required: true, default: 'Aluno' },
-		is_deleted: { type: Boolean, required: true },
+		is_deleted: { type: Boolean },
 		subject: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'subjects',

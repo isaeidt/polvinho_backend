@@ -1,15 +1,14 @@
 import 'dotenv/config';
 import express from 'express';
+import loginRoute from '../routes/loginRoute.js';
 import conn from '../validator/conn.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 app.use(express.json());
 
-app.get('/', (req, res) => {
-	res.status(200).send('Polvinho no ar! API funcionando.');
-});
+app.use(express.json());
+app.use('/auth', loginRoute);
 
 conn()
 	.then(() => {
