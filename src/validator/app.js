@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
-import conn from './db/conn.js';
+import conn from '../validator/conn.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
