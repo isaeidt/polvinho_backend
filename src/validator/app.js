@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import loginRoute from '../routes/loginRoute.js';
+import userRoute from '../routes/userRoute.js';
 import conn from '../validator/conn.js';
 
 const app = express();
@@ -8,7 +9,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(express.json());
-app.use('/auth', loginRoute);
+app.use('/login', loginRoute);
+app.use('/users', userRoute);
 
 conn()
 	.then(() => {

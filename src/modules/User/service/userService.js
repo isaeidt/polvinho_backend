@@ -27,7 +27,7 @@ class createUser {
 				return res
 					.status(400)
 					.json({ error: 'Formato senha invalido' });
-			}
+			} // eu acho que isso não verifica aqui mas não sei
 
 			const user = await Users.create({
 				name,
@@ -47,4 +47,28 @@ class createUser {
 		}
 	}
 }
-export default new createUser();
+
+class getUserById {
+	async get(req, res) {
+		try {
+			const { id } = req.params;
+			const idUser = await Users.findById(id);
+
+			if (!idUser) {
+				return res
+					.status(400)
+					.json({ error: 'Usuário não encontrado' });
+			}
+
+			return res.status(201).json(idUser);
+		} catch (error) {
+			return res.status(500).json({
+				error: 'Falha ao encontrar usuário',
+				details: error.message,
+			});
+		}
+	}
+}
+const createUserInstance = new createUser();
+const getUserByIdInstance = new getUserById();
+export { createUserInstance as createUser, getUserByIdInstance as getUserById };
