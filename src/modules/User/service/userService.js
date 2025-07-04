@@ -21,13 +21,19 @@ class createUser {
 					.json({ error: 'Formato email invalido' });
 			}
 
-			const regexSenha =
-				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,32}$/;
-			if (!regexSenha.test(password_hash)) {
-				return res
-					.status(400)
-					.json({ error: 'Formato senha invalido' });
-			} // eu acho que isso não verifica aqui mas não sei
+			if (password_hash !== registration) {
+				return res.status(400).json({
+					error: 'Primeira senha deve ser igual a matricula',
+				});
+			}
+
+			// const regexSenha =
+			// 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,32}$/;
+			// if (!regexSenha.test(password_hash)) {
+			// 	return res
+			// 		.status(400)
+			// 		.json({ error: 'Formato senha invalido' });
+			// } // isso aqui com certeza nn fica aqui, pq a senha aqui tem que ser igual a matricula e dps no login que pede pra trocar
 
 			const user = await Users.create({
 				name,
@@ -69,6 +75,20 @@ class getUserById {
 		}
 	}
 }
+
+// class updateUser {
+//     async update(req, res){
+//         try {
+
+//         } catch (error) {
+
+//         }
+//     }
+// }
+
+//update, ler todos os usuarios e deletar(não pode deletar de verdade só tem que mudar o status do isDeleted pra true??)
+// no update muitas coisas só o admin pode fazer, como validar isso
+// os users só podem ser criados por um admin, como fazer essa validação, tipo só dara acesso as páginas de cadastro pela role no front?
 const createUserInstance = new createUser();
 const getUserByIdInstance = new getUserById();
 export { createUserInstance as createUser, getUserByIdInstance as getUserById };

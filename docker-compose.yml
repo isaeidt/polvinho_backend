@@ -26,6 +26,6 @@ services:
 volumes:
   mongodata:
 
-#docker-compose up --build -d     cria a imagem e não trava o terminal por causa do -d
+#docker-compose up --build -d mongo    cria a imagem e não trava o terminal por causa do -d
 # docker-compose logs -f          ve os logs
 #docker-compose down              apaga a imagem
