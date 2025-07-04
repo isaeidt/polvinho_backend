@@ -5,8 +5,15 @@ import User from '../model/Users.js';
 class LoginController {
 	async login(req, res) {
 		try {
-			const { email, password_hash } = req.body;
-			const user = await User.findOne({ email }).select('+password_hash');
+			const { email, registration, password_hash } = req.body;
+			let user;
+			if (email) {
+				user = await User.findOne({ email }).select('+password_hash');
+			} else if (registration) {
+				user = await User.findOne({ registration }).select(
+					'+password_hash',
+				);
+			}
 
 			if (!user) {
 				return res
