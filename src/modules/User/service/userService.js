@@ -33,7 +33,7 @@ class createUser {
 			// 	return res
 			// 		.status(400)
 			// 		.json({ error: 'Formato senha invalido' });
-			// } // isso aqui com certeza nn fica aqui, pq a senha aqui tem que ser igual a matricula e dps no login que pede pra trocar
+			// } // isso aqui com certeza nn fica aqui, pq a senha a qui tem que ser igual a matricula e dps no login que pede pra trocar
 
 			const user = await Users.create({
 				name,

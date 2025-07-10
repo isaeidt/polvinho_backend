@@ -21,15 +21,22 @@ class LoginController {
 					.json({ error: 'Credenciais inválidas.' });
 			}
 
+			// const isFirstLogin = await bcrypt.compare(
+			// 	password_hash,
+			// 	registration
+			// )
+
+			// if(isFirstLogin){
+
+			// } ?????? não sei como fazer essa parte
+
 			const isPasswordCorrect = await bcrypt.compare(
 				password_hash,
 				user.password_hash,
 			);
 
 			if (!isPasswordCorrect) {
-				return res
-					.status(401)
-					.json({ error: 'Credenciais inválidas.' });
+				return res.status(401).json({ error: 'Senha incorreta.' });
 			}
 
 			const token = jwt.sign(
