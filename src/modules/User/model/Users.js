@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const UsersSchema = new Schema(
+const UserSchema = new Schema(
 	{
 		name: { type: String, required: true },
 		email: { type: String, required: true, unique: true },
@@ -20,7 +20,7 @@ const UsersSchema = new Schema(
 	{ timestamps: true }, //função do mongoose que adiciona automaticamente o cretAt e updateAt
 );
 
-UsersSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next) {
 	const user = this;
 
 	if (!user.isModified('password_hash')) {
@@ -34,6 +34,6 @@ UsersSchema.pre('save', async function (next) {
 	next();
 });
 
-const Users = mongoose.model('Users', UsersSchema);
+const User = mongoose.model('User', UserSchema);
 
-export default Users;
+export default User;

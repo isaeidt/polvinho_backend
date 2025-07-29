@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.json());
 
 app.use('/login', loginRoute);
-app.use('/users', userRoute);
+app.use('/', userRoute);
 
 conn()
 	.then(() => {

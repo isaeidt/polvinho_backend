@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
-	createUserController,
+	createAlunoController,
+	createProfessorController,
 	deleteUserController,
 	getAllUsersController,
 	getUserByIdController,
@@ -9,7 +10,8 @@ import {
 
 const userRouter = Router();
 
-userRouter.post('/create', createUserController);
+userRouter.post('/createProfessor', createProfessorController);
+userRouter.post('/createAluno', createAlunoController);
 userRouter.get('/:id', getUserByIdController);
 userRouter.get('/', getAllUsersController);
 userRouter.patch('/:id', updateUserController);

@@ -1,15 +1,16 @@
-import Users from '../model/Users.js';
-class createUser {
+import User from '../model/Users.js';
+class createProfessor {
 	async create(req, res) {
 		try {
-			const { email, registration, role, password_hash, name } = req.body;
+			const { email, registration, password_hash, name, subject } =
+				req.body;
 
-			if (await Users.findOne({ email })) {
+			if (await User.findOne({ email })) {
 				return res
 					.status(400)
 					.json({ error: 'Este e-mail já está em uso' });
 			}
-			if (await Users.findOne({ registration })) {
+			if (await User.findOne({ registration })) {
 				return res
 					.status(400)
 					.json({ error: 'Esta matricula já está em uso' });
@@ -27,12 +28,62 @@ class createUser {
 				});
 			}
 
-			const user = await Users.create({
+			const user = await User.create({
 				name,
 				email,
 				password_hash,
 				registration,
-				role,
+				role: 'Professor',
+				subject,
+			});
+
+			user.password_hash = undefined;
+			return res.status(201).json(user);
+		} catch (error) {
+			return res.status(500).json({
+				error: 'Falha ao registrar usuário',
+				details: error.message,
+			});
+		}
+	}
+}
+
+class createAluno {
+	async create(req, res) {
+		try {
+			const { email, registration, password_hash, name, subject } =
+				req.body;
+
+			if (await User.findOne({ email })) {
+				return res
+					.status(400)
+					.json({ error: 'Este e-mail já está em uso' });
+			}
+			if (await User.findOne({ registration })) {
+				return res
+					.status(400)
+					.json({ error: 'Esta matricula já está em uso' });
+			}
+			const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!regexEmail.test(email)) {
+				return res
+					.status(400)
+					.json({ error: 'Formato email invalido' });
+			}
+
+			if (password_hash !== registration) {
+				return res.status(400).json({
+					error: 'Primeira senha deve ser igual a matricula',
+				});
+			}
+
+			const user = await User.create({
+				name,
+				email,
+				password_hash,
+				registration,
+				role: 'Aluno',
+				subject,
 			});
 
 			user.password_hash = undefined;
@@ -50,7 +101,7 @@ class getUserById {
 	async get(req, res) {
 		try {
 			const { id } = req.params;
-			const idUser = await Users.findById(id);
+			const idUser = await User.findById(id);
 
 			if (!idUser) {
 				return res
@@ -71,7 +122,7 @@ class getUserById {
 class getAllUsers {
 	async get(_req, res) {
 		try {
-			const users = await Users.find();
+			const users = await User.find();
 			return res.status(201).json(users);
 		} catch (error) {
 			return res.status(500).json({
@@ -97,10 +148,13 @@ class updateUser {
 			if (req.body.password_hash) {
 				updates.password_hash = req.body.password_hash;
 			}
+			const userExist = await User.findById(id);
+			console.log('🚀 ~ updateUser ~ update ~ userExist:', userExist);
 
-			const updateUser = await Users.findByIdAndUpdate(id, updates, {
+			const updateUser = await User.findByIdAndUpdate(id, updates, {
 				new: true,
 			});
+
 			return res.status(201).json(updateUser);
 		} catch (error) {
 			return res.status(500).json({
@@ -115,7 +169,7 @@ class deleteUser {
 	async delete(req, res) {
 		try {
 			const { id } = req.params;
-			const deleteUser = await Users.findByIdAndUpdate(
+			const deleteUser = await User.findByIdAndUpdate(
 				id,
 				{ is_deleted: true },
 				{ new: true },
@@ -130,23 +184,22 @@ class deleteUser {
 	}
 }
 
-const createUserInstance = new createUser();
+const createProfessorInstance = new createProfessor();
 const getUserByIdInstance = new getUserById();
 const updateUserInstance = new updateUser();
 const getAllUsersInstance = new getAllUsers();
 const deleteUserInstance = new deleteUser();
+const createAlunoInstance = new createAluno();
 
 export {
-	createUserInstance as createUser,
+	createAlunoInstance as createAluno,
+	createProfessorInstance as createProfessor,
 	deleteUserInstance as deleteUser,
 	getAllUsersInstance as getAllUsers,
 	getUserByIdInstance as getUserById,
 	updateUserInstance as updateUser,
 };
 
-//update, ler todos os usuarios e deletar(não pode deletar de verdade só tem que mudar o status do isDeleted pra true??)
-// no update muitas coisas só o admin pode fazer, como validar isso
-// os users só podem ser criados por um admin, como fazer essa validação, tipo só dara acesso as páginas de cadastro pela role no front?
 // const regexSenha =
 // 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,32}$/;
 // if (!regexSenha.test(password_hash)) {

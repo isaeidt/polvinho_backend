@@ -1,13 +1,17 @@
 import {
-	createUser,
+	createAluno,
+	createProfessor,
 	deleteUser,
 	getAllUsers,
 	getUserById,
 	updateUser,
 } from '../service/userService.js';
 
-export const createUserController = async (req, res) => {
-	return await createUser.create(req, res);
+export const createProfessorController = async (req, res) => {
+	return await createProfessor.create(req, res);
+};
+export const createAlunoController = async (req, res) => {
+	return await createAluno.create(req, res);
 };
 
 export const getUserByIdController = async (req, res) => {
