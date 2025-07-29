@@ -3,7 +3,8 @@ import {
 	createProfessor,
 	deleteUser,
 	getAllUsers,
-	getUserById,
+	getAlunoById,
+	getProfessorById,
 	updateUser,
 } from '../service/userService.js';
 
@@ -14,8 +15,12 @@ export const createAlunoController = async (req, res) => {
 	return await createAluno.create(req, res);
 };
 
-export const getUserByIdController = async (req, res) => {
-	return await getUserById.get(req, res);
+export const getAlunoByIdController = async (req, res) => {
+	return await getAlunoById.get(req, res);
+};
+
+export const getProfessorByIdController = async (req, res) => {
+	return await getProfessorById.get(req, res);
 };
 
 export const updateUserController = async (req, res) => {

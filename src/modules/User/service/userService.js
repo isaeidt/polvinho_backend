@@ -97,21 +97,41 @@ class createAluno {
 	}
 }
 
-class getUserById {
+class getProfessorById {
 	async get(req, res) {
 		try {
 			const { id } = req.params;
-			const idUser = await User.findById(id);
+			const user = await User.findById(id);
 
-			if (!idUser) {
+			if (!user || user.role !== 'Professor') {
 				return res
 					.status(400)
-					.json({ error: 'Usuário não encontrado' });
+					.json({ error: 'Professor não encontrado' });
 			}
 
-			return res.status(201).json(idUser);
+			return res.status(201).json(user);
 		} catch (error) {
 			return res.status(500).json({
+				error: 'Falha ao encontrar usuário',
+				details: error.message,
+			});
+		}
+	}
+}
+
+class getAlunoById {
+	async get(req, res) {
+		try {
+			const { id } = req.params;
+			const user = await User.findById(id);
+
+			if (!user || user.role !== 'Aluno') {
+				return res.status(200).json({ error: 'Aluno não encontrado' });
+			}
+
+			return res.status(200).json(user);
+		} catch (error) {
+			return res.status(404).json({
 				error: 'Falha ao encontrar usuário',
 				details: error.message,
 			});
@@ -123,9 +143,9 @@ class getAllUsers {
 	async get(_req, res) {
 		try {
 			const users = await User.find();
-			return res.status(201).json(users);
+			return res.status(200).json(users);
 		} catch (error) {
-			return res.status(500).json({
+			return res.status(404).json({
 				error: 'Falha ao encontrar usuários',
 				details: error.message,
 			});
@@ -185,7 +205,8 @@ class deleteUser {
 }
 
 const createProfessorInstance = new createProfessor();
-const getUserByIdInstance = new getUserById();
+const getProfessorByIdInstance = new getProfessorById();
+const getAlunoByIdInstance = new getAlunoById();
 const updateUserInstance = new updateUser();
 const getAllUsersInstance = new getAllUsers();
 const deleteUserInstance = new deleteUser();
@@ -196,14 +217,7 @@ export {
 	createProfessorInstance as createProfessor,
 	deleteUserInstance as deleteUser,
 	getAllUsersInstance as getAllUsers,
-	getUserByIdInstance as getUserById,
+	getAlunoByIdInstance as getAlunoById,
+	getProfessorByIdInstance as getProfessorById,
 	updateUserInstance as updateUser,
 };
-
-// const regexSenha =
-// 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,32}$/;
-// if (!regexSenha.test(password_hash)) {
-// 	return res
-// 		.status(400)
-// 		.json({ error: 'Formato senha invalido' });
-// } // isso aqui com certeza nn fica aqui, pq a senha aqui tem que ser igual a matricula e dps no login que pede pra trocar
