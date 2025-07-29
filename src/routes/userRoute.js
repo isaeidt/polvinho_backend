@@ -3,20 +3,20 @@ import {
 	createAlunoController,
 	createProfessorController,
 	deleteUserController,
-	getAllUsersController,
-	getAlunoByIdController,
-	getProfessorByIdController,
+	getAllAlunoController,
+	getAllProfessorController,
+	getUserByIdController,
 	updateUserController,
 } from '../modules/User/controller/userController.js';
 
 const userRouter = Router();
 
-userRouter.post('/createProfessor', createProfessorController);
-userRouter.post('/createAluno', createAlunoController);
-userRouter.get('/:id', getProfessorByIdController);
-userRouter.get('/:id', getAlunoByIdController);
-userRouter.get('/', getAllUsersController);
-userRouter.patch('/:id', updateUserController);
-userRouter.delete('/:id', deleteUserController);
+userRouter.post('/create/professor', createProfessorController);
+userRouter.post('/create/aluno', createAlunoController);
+userRouter.get('/all/professor', getAllProfessorController);
+userRouter.get('/all/aluno', getAllAlunoController);
+userRouter.get('/:id', getUserByIdController);
+userRouter.patch('/update/:id', updateUserController);
+userRouter.delete('/delete/:id', deleteUserController);
 
 export default userRouter;

@@ -97,19 +97,17 @@ class createAluno {
 	}
 }
 
-class getProfessorById {
+class getUserById {
 	async get(req, res) {
 		try {
 			const { id } = req.params;
 			const user = await User.findById(id);
 
-			if (!user || user.role !== 'Professor') {
-				return res
-					.status(400)
-					.json({ error: 'Professor não encontrado' });
+			if (!user) {
+				return res.status(400).json({ error: 'User não encontrado' });
 			}
 
-			return res.status(201).json(user);
+			return res.status(200).json(user);
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao encontrar usuário',
@@ -119,34 +117,29 @@ class getProfessorById {
 	}
 }
 
-class getAlunoById {
-	async get(req, res) {
+class getAllProfessor {
+	async get(_req, res) {
 		try {
-			const { id } = req.params;
-			const user = await User.findById(id);
-
-			if (!user || user.role !== 'Aluno') {
-				return res.status(200).json({ error: 'Aluno não encontrado' });
-			}
-
-			return res.status(200).json(user);
+			const users = await User.find({ role: 'Professor' });
+			return res.status(200).json(users);
 		} catch (error) {
-			return res.status(404).json({
-				error: 'Falha ao encontrar usuário',
+			return res.status(500).json({
+				error: 'Falha ao encontrar professores',
 				details: error.message,
 			});
 		}
 	}
 }
 
-class getAllUsers {
+class getAllAluno {
 	async get(_req, res) {
 		try {
-			const users = await User.find();
+			const users = await User.find({ role: 'Aluno' });
+			console.log('🚀 ~ getAllUsers ~ get ~ users:', users);
 			return res.status(200).json(users);
 		} catch (error) {
-			return res.status(404).json({
-				error: 'Falha ao encontrar usuários',
+			return res.status(500).json({
+				error: 'Falha ao encontrar alunos',
 				details: error.message,
 			});
 		}
@@ -168,14 +161,12 @@ class updateUser {
 			if (req.body.password_hash) {
 				updates.password_hash = req.body.password_hash;
 			}
-			const userExist = await User.findById(id);
-			console.log('🚀 ~ updateUser ~ update ~ userExist:', userExist);
 
 			const updateUser = await User.findByIdAndUpdate(id, updates, {
 				new: true,
 			});
 
-			return res.status(201).json(updateUser);
+			return res.status(200).json(updateUser);
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao editar usuário',
@@ -205,10 +196,10 @@ class deleteUser {
 }
 
 const createProfessorInstance = new createProfessor();
-const getProfessorByIdInstance = new getProfessorById();
-const getAlunoByIdInstance = new getAlunoById();
+const getUserByIdInstance = new getUserById();
 const updateUserInstance = new updateUser();
-const getAllUsersInstance = new getAllUsers();
+const getAllAlunoInstance = new getAllAluno();
+const getAllProfessorInstance = new getAllProfessor();
 const deleteUserInstance = new deleteUser();
 const createAlunoInstance = new createAluno();
 
@@ -216,8 +207,8 @@ export {
 	createAlunoInstance as createAluno,
 	createProfessorInstance as createProfessor,
 	deleteUserInstance as deleteUser,
-	getAllUsersInstance as getAllUsers,
-	getAlunoByIdInstance as getAlunoById,
-	getProfessorByIdInstance as getProfessorById,
+	getAllAlunoInstance as getAllAluno,
+	getAllProfessorInstance as getAllProfessor,
+	getUserByIdInstance as getUserById,
 	updateUserInstance as updateUser,
 };
