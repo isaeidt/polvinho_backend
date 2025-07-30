@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const SubjectsSchema = new Schema(
 	{
-		name: { type: String, required: true },
+		name: { type: String, required: true, unique: true },
 		is_deleted: { type: Boolean, required: true },
 		professor: {
 			type: mongoose.Schema.Types.ObjectId,

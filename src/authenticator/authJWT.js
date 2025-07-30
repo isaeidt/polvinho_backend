@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
 	const authHeader = req.headers['authorization'];
 
 	if (!authHeader) {
@@ -31,4 +31,16 @@ const verifyToken = (req, res, next) => {
 	});
 };
 
-export default verifyToken;
+export const verifyRole = rolePermitida => {
+	return (req, res, next) => {
+		const { role } = req.user;
+
+		if (!role || !rolePermitida.includes(role)) {
+			return res.status(403).json({
+				error: 'Você não tem permissão',
+			});
+		}
+
+		next();
+	};
+};

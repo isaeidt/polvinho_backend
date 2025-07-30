@@ -1,5 +1,5 @@
 import User from '../model/Users.js';
-class createProfessor {
+class CreateProfessor {
 	async create(req, res) {
 		try {
 			const { email, registration, password_hash, name, subject } =
@@ -48,7 +48,7 @@ class createProfessor {
 	}
 }
 
-class createAluno {
+class CreateAluno {
 	async create(req, res) {
 		try {
 			const { email, registration, password_hash, name, subject } =
@@ -97,7 +97,7 @@ class createAluno {
 	}
 }
 
-class getUserById {
+class GetUserById {
 	async get(req, res) {
 		try {
 			const { id } = req.params;
@@ -117,7 +117,7 @@ class getUserById {
 	}
 }
 
-class getAllProfessor {
+class GetAllProfessor {
 	async get(_req, res) {
 		try {
 			const users = await User.find({ role: 'Professor' });
@@ -131,7 +131,7 @@ class getAllProfessor {
 	}
 }
 
-class getAllAluno {
+class GetAllAluno {
 	async get(_req, res) {
 		try {
 			const users = await User.find({ role: 'Aluno' });
@@ -146,7 +146,7 @@ class getAllAluno {
 	}
 }
 
-class updateUser {
+class UpdateUser {
 	async update(req, res) {
 		try {
 			const { id } = req.params;
@@ -176,7 +176,7 @@ class updateUser {
 	}
 }
 
-class deleteUser {
+class DeleteUser {
 	async delete(req, res) {
 		try {
 			const { id } = req.params;
@@ -195,20 +195,10 @@ class deleteUser {
 	}
 }
 
-const createProfessorInstance = new createProfessor();
-const getUserByIdInstance = new getUserById();
-const updateUserInstance = new updateUser();
-const getAllAlunoInstance = new getAllAluno();
-const getAllProfessorInstance = new getAllProfessor();
-const deleteUserInstance = new deleteUser();
-const createAlunoInstance = new createAluno();
-
-export {
-	createAlunoInstance as createAluno,
-	createProfessorInstance as createProfessor,
-	deleteUserInstance as deleteUser,
-	getAllAlunoInstance as getAllAluno,
-	getAllProfessorInstance as getAllProfessor,
-	getUserByIdInstance as getUserById,
-	updateUserInstance as updateUser,
-};
+export const createProfessor = new CreateProfessor();
+export const createAluno = new CreateAluno();
+export const getUserById = new GetUserById();
+export const getAllProfessor = new GetAllProfessor();
+export const getAllAluno = new GetAllAluno();
+export const updateUser = new UpdateUser();
+export const deleteUser = new DeleteUser();

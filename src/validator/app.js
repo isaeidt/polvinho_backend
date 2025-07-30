@@ -1,19 +1,23 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
 import loginRoute from '../routes/loginRoute.js';
 import userRoute from '../routes/userRoute.js';
+//import dashboardRoute from '../routes/dashboardRoute.js';
 import conn from '../validator/conn.js';
 
 const app = express();
 app.use(cors());
+app.use(cookieParser());
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use(express.json());
 
 app.use('/login', loginRoute);
-app.use('/', userRoute);
+app.use('/api', userRoute);
+//app.use('/', dashboardRoute);
 
 conn()
 	.then(() => {

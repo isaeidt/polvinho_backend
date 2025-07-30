@@ -47,7 +47,10 @@ class LoginController {
 
 			user.password_hash = undefined;
 
-			return res.status(200).json({ user, token });
+			return res.status(200).json({
+				user: { id: user._id, name: user.name, role: user.role },
+				token,
+			});
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao fazer login.',
