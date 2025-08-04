@@ -124,6 +124,11 @@ class DeleteSubject {
 	}
 }
 
+/* no delete tem que apagar o id do professor e apagar o id da matéria no professor if subject
+{is_delete:true} e no professor a mesma coisa quando for deletar tem que apagar o id das matérias e nas matéias o id 
+do professor, e no professor tem que poder adicionar matéria que vai ser um array de matérias
+ */
+
 export const createSubject = new CreateSubject();
 export const getSubjectById = new GetSubjectById();
 export const getAllSubject = new GetAllSubject();

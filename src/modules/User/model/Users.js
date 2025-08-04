@@ -11,11 +11,13 @@ const UserSchema = new Schema(
 		password_hash: { type: String, required: true },
 		role: { type: String, required: true, default: 'Aluno' },
 		is_deleted: { type: Boolean },
-		subject: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'subjects',
-			default: null,
-		},
+		subjects: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'subjects',
+				default: null,
+			},
+		],
 	},
 	{ timestamps: true }, //função do mongoose que adiciona automaticamente o cretAt e updateAt
 );

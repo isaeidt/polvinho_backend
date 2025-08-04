@@ -2,7 +2,7 @@ import User from '../model/Users.js';
 class CreateProfessor {
 	async create(req, res) {
 		try {
-			const { email, registration, password_hash, name, subject } =
+			const { email, registration, password_hash, name, subjects } =
 				req.body;
 
 			if (await User.findOne({ email })) {
@@ -34,7 +34,7 @@ class CreateProfessor {
 				password_hash,
 				registration,
 				role: 'Professor',
-				subject,
+				subjects,
 			});
 
 			user.password_hash = undefined;
@@ -51,7 +51,7 @@ class CreateProfessor {
 class CreateAluno {
 	async create(req, res) {
 		try {
-			const { email, registration, password_hash, name, subject } =
+			const { email, registration, password_hash, name, subjects } =
 				req.body;
 
 			if (await User.findOne({ email })) {
@@ -83,7 +83,7 @@ class CreateAluno {
 				password_hash,
 				registration,
 				role: 'Aluno',
-				subject,
+				subjects,
 			});
 
 			user.password_hash = undefined;
@@ -160,6 +160,9 @@ class UpdateUser {
 			}
 			if (req.body.password_hash) {
 				updates.password_hash = req.body.password_hash;
+			}
+			if (req.body.subjects) {
+				updates.subjects = req.body.subjects;
 			}
 
 			const updateUser = await User.findByIdAndUpdate(id, updates, {
