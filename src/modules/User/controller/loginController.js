@@ -21,15 +21,6 @@ class LoginController {
 					.json({ error: 'Credenciais inválidas.' });
 			}
 
-			// const isFirstLogin = await bcrypt.compare(
-			// 	password_hash,
-			// 	registration
-			// )
-
-			// if(isFirstLogin){
-
-			// } ?????? não sei como fazer essa parte
-
 			const isPasswordCorrect = await bcrypt.compare(
 				password_hash,
 				user.password_hash,
