@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const SubjectsSchema = new Schema(
 	{
 		name: { type: String, required: true, unique: true },
-		is_deleted: { type: Boolean, required: true },
+		is_deleted: { type: Boolean },
 		professor: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'users',
@@ -15,6 +15,6 @@ const SubjectsSchema = new Schema(
 	{ timestamps: true }, //função do mongoose que adiciona automaticamente o cretAt e updateAt
 );
 
-const Subjects = mongoose.model('Subjects', SubjectsSchema);
+const Subject = mongoose.model('Subjects', SubjectsSchema);
 
-export default Subjects;
+export default Subject;
