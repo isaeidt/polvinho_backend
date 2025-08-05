@@ -89,6 +89,22 @@ class UpdateSubject {
 			}
 			if (req.body.professor) {
 				updates.professor = req.body.professor;
+				const subject = await Subject.findById(id);
+				if (subject.professor) {
+					const professor = await User.findById(subject.professor);
+
+					const result = await User.findByIdAndUpdate(
+						professor._id,
+						{ $push: { subjects: id } },
+						{ new: true },
+					);
+
+					if (!result) {
+						return res.status(400).json({
+							error: 'Não possui professor',
+						});
+					}
+				}
 			}
 
 			const updateSubject = await Subject.findByIdAndUpdate(id, updates, {
@@ -114,7 +130,13 @@ class DeleteSubject {
 				{ is_deleted: true },
 				{ new: true },
 			);
-			return res.status(200).json(deleteSubject);
+			const result = await User.updateMany(
+				{ subjects: id },
+				{ $pull: { subjects: id } },
+				{ new: true },
+			);
+
+			return res.status(200).json(deleteSubject, result);
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao deletar matéria',
@@ -123,11 +145,6 @@ class DeleteSubject {
 		}
 	}
 }
-
-/* no delete tem que apagar o id do professor e apagar o id da matéria no professor if subject
-{is_delete:true} e no professor a mesma coisa quando for deletar tem que apagar o id das matérias e nas matéias o id 
-do professor, e no professor tem que poder adicionar matéria que vai ser um array de matérias
- */
 
 export const createSubject = new CreateSubject();
 export const getSubjectById = new GetSubjectById();
