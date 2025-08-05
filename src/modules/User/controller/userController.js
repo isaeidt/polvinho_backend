@@ -5,8 +5,11 @@ import {
 	getAllAluno,
 	getAllProfessor,
 	getUserById,
+	updatePassword,
 	updateUser,
 } from '../service/userService.js';
+
+//não adicionei as validações ainda!! mas tem que colocar o verifyToken e verifyRole
 
 export const createProfessorController = async (req, res) => {
 	return await createProfessor.create(req, res);
@@ -21,6 +24,10 @@ export const getUserByIdController = async (req, res) => {
 
 export const updateUserController = async (req, res) => {
 	return await updateUser.update(req, res);
+};
+
+export const updatePasswordController = async (req, res) => {
+	return await updatePassword.update(req, res);
 };
 
 export const getAllAlunoController = async (_req, res) => {

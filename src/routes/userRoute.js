@@ -6,6 +6,7 @@ import {
 	getAllAlunoController,
 	getAllProfessorController,
 	getUserByIdController,
+	updatePasswordController,
 	updateUserController,
 } from '../modules/User/controller/userController.js';
 
@@ -17,6 +18,7 @@ userRouter.get('/all/professor', getAllProfessorController);
 userRouter.get('/all/aluno', getAllAlunoController);
 userRouter.get('/:id', getUserByIdController);
 userRouter.patch('/update/:id', updateUserController);
+userRouter.patch('/updatepassword/:id', updatePasswordController);
 userRouter.delete('/delete/:id', deleteUserController);
 
 export default userRouter;

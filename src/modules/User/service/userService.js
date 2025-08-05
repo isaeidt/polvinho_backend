@@ -154,7 +154,7 @@ class UpdateUser {
 		try {
 			const { id } = req.params;
 			const updates = {};
-			//const user = await User.findById(id);
+			const user = await User.findById(id);
 
 			if (req.body.name) {
 				updates.name = req.body.name;
@@ -163,24 +163,30 @@ class UpdateUser {
 				updates.email = req.body.email;
 			}
 			if (req.body.password_hash) {
-				const salt = await bcrypt.genSalt(10);
-				updates.password_hash = await bcrypt.hash(
-					req.body.password_hash,
-					salt,
-				);
+				if (!req.body.password_hash == user.registration) {
+					return res
+						.status(400)
+						.json({ error: 'A senha deve ser igual a matricula' });
+				} else {
+					const salt = await bcrypt.genSalt(10);
+					updates.password_hash = await bcrypt.hash(
+						req.body.password_hash,
+						salt,
+					);
+				}
 			}
-			// if (req.body.subjects) {
-			// 	updates.subjects = req.body.subjects; //aqui se eu nn colocar no body as matérias que já tinha e as novas ele substitui deixando só uma
 
-			// 	if(user.role === "Professor"){
-			// 		for (const subjectId of req.body.subjects) {
-			// 		await Subject.findByIdAndUpdate(subjectId, { professor: id });
-			// 		}
-			// 	}
+			if (req.body.subjects) {
+				updates.subjects = req.body.subjects;
 
-			// }      tem que fazer duas classes de update uma tipo updateprofile e outra updateadmin pra que o admin possa mexer nas matérias, e nas matérias
-			//  tem que considerar que as matérias antigas devem permanecer e adicionar as outras, aí se quiser remover alguma acho que tem que ter um campo separado,
-			// basicamente o usuario só pode udar a propria senha ent ia ser um campo tipo updatepassword e no update do admin a senha só pode ser igual a registration
+				if (user.role === 'Professor') {
+					for (const subjectId of req.body.subjects) {
+						await Subject.findByIdAndUpdate(subjectId, {
+							professor: id,
+						});
+					}
+				}
+			}
 
 			const updateUser = await User.findByIdAndUpdate(id, updates, {
 				new: true,
@@ -191,6 +197,35 @@ class UpdateUser {
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao editar usuário',
+				details: error.message,
+			});
+		}
+	}
+}
+
+class UpdatePassword {
+	async update(req, res) {
+		try {
+			const { id } = req.params;
+			const updates = {};
+
+			if (req.body.password_hash) {
+				const salt = await bcrypt.genSalt(10);
+				updates.password_hash = await bcrypt.hash(
+					req.body.password_hash,
+					salt,
+				);
+			}
+
+			const updateUser = await User.findByIdAndUpdate(id, updates, {
+				new: true,
+			});
+			updates.password_hash = undefined;
+
+			return res.status(200).json(updateUser);
+		} catch (error) {
+			return res.status(500).json({
+				error: 'Falha ao editar senha do usuário',
 				details: error.message,
 			});
 		}
@@ -233,4 +268,5 @@ export const getUserById = new GetUserById();
 export const getAllProfessor = new GetAllProfessor();
 export const getAllAluno = new GetAllAluno();
 export const updateUser = new UpdateUser();
+export const updatePassword = new UpdatePassword();
 export const deleteUser = new DeleteUser();
