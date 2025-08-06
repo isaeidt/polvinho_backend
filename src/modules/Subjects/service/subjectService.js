@@ -105,9 +105,7 @@ class UpdateSubject {
 						});
 					}
 				}
-			} //aqui ao atualizar fica salvo apenas as matérias que eu atualizei e aí se eu colocar uma matéria no lugar de outras duas o id do professor
-			// permanece nessas diciplinas anteriores mesmo se elas não estando mais aquim, então tem que fazer uma lógica pra remover o id do professor
-			// caso isso aconteça
+			}
 
 			const updateSubject = await Subject.findByIdAndUpdate(id, updates, {
 				new: true,

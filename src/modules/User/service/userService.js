@@ -148,7 +148,6 @@ class GetAllAluno {
 		}
 	}
 }
-
 class UpdateUser {
 	async update(req, res) {
 		try {
@@ -156,44 +155,59 @@ class UpdateUser {
 			const updates = {};
 			const user = await User.findById(id);
 
+			if (!user) {
+				return res
+					.status(404)
+					.json({ error: 'Usuário não encontrado' });
+			}
+
 			if (req.body.name) {
 				updates.name = req.body.name;
 			}
 			if (req.body.email) {
 				updates.email = req.body.email;
 			}
+
 			if (req.body.password_hash) {
-				if (!req.body.password_hash == user.registration) {
+				if (req.body.password_hash !== user.registration) {
 					return res
 						.status(400)
 						.json({ error: 'A senha deve ser igual a matricula' });
-				} else {
-					const salt = await bcrypt.genSalt(10);
-					updates.password_hash = await bcrypt.hash(
-						req.body.password_hash,
-						salt,
-					);
 				}
+				const salt = await bcrypt.genSalt(10);
+				updates.password_hash = await bcrypt.hash(
+					req.body.password_hash,
+					salt,
+				);
 			}
 
-			if (req.body.subjects) {
+			if (req.body.subjects && user.role === 'Professor') {
+				const newSubjects = req.body.subjects || [];
+
+				await Subject.updateMany(
+					{ professor: id },
+					{ professor: null },
+				);
+
+				updates.subjects = newSubjects;
+
+				await Subject.updateMany(
+					{ _id: { $in: newSubjects } },
+					{ professor: id },
+				);
+			} else if (req.body.subjects) {
 				updates.subjects = req.body.subjects;
-
-				if (user.role === 'Professor') {
-					for (const subjectId of req.body.subjects) {
-						await Subject.findByIdAndUpdate(subjectId, {
-							professor: id,
-						});
-					}
-				}
 			}
 
-			const updateUser = await User.findByIdAndUpdate(id, updates, {
+			const updatedUser = await User.findByIdAndUpdate(id, updates, {
 				new: true,
 			});
-			updates.password_hash = undefined;
 
-			return res.status(200).json(updateUser);
+			if (updatedUser) {
+				updatedUser.password_hash = undefined;
+			}
+
+			return res.status(200).json(updatedUser);
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao editar usuário',
