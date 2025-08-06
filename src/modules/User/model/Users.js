@@ -14,7 +14,7 @@ const UserSchema = new Schema(
 		subjects: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
-				ref: 'subjects',
+				ref: 'Subjects',
 				default: null,
 			},
 		],

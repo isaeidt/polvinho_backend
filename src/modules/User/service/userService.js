@@ -105,6 +105,7 @@ class GetUserById {
 		try {
 			const { id } = req.params;
 			const user = await User.findById(id).populate('subjects');
+			console.log('🚀 ~ GetUserById ~ get ~ user:', user);
 
 			if (!user) {
 				return res.status(400).json({ error: 'User não encontrado' });
