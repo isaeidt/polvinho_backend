@@ -104,7 +104,7 @@ class GetUserById {
 	async get(req, res) {
 		try {
 			const { id } = req.params;
-			const user = await User.findById(id);
+			const user = await User.findById(id).populate('subjects');
 
 			if (!user) {
 				return res.status(400).json({ error: 'User não encontrado' });
@@ -229,6 +229,13 @@ class UpdatePassword {
 					req.body.password_hash,
 					salt,
 				);
+				const regexSenha =
+					/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,32}$/;
+				if (!regexSenha.test(req.body.password_hash)) {
+					return res
+						.status(400)
+						.json({ error: 'Formato senha invalido' });
+				}
 			}
 
 			const updateUser = await User.findByIdAndUpdate(id, updates, {
