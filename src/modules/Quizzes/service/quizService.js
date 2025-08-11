@@ -1,29 +1,48 @@
+import Subject from '../../Subjects/model/Subjects.js';
 import Quiz from '../model/Quizzes.js';
 
 class CreateQuiz {
 	async create(req, res) {
 		try {
-			const {
-				title,
-				max_attempts,
-				time_minutes,
-				release_date,
-				subjects,
-			} = req.body;
+			const { title, max_attempts, time_minutes, release_date, subject } =
+				req.body;
+
+			if (!subject) {
+				return res.status(400).json({
+					error: 'O campo "subject" (ID da matéria) é obrigatório.',
+				});
+			}
+
+			const foundSubject = await Subject.findById(subject);
+
+			if (!foundSubject) {
+				return res.status(404).json({
+					error: 'Falha ao cadastrar Quiz',
+					details: 'A matéria com o ID fornecido não foi encontrada.',
+				});
+			}
+
+			if (!foundSubject.professor) {
+				return res.status(400).json({
+					error: 'Falha ao cadastrar Quiz',
+					details:
+						'A matéria encontrada não possui um professor associado.',
+				});
+			}
 
 			const quiz = await Quiz.create({
 				title,
 				max_attempts,
 				time_minutes,
 				release_date,
-				professor: subjects._id, //pegar o id do professor pelo is salvo na subject
-				subjects,
+				professor: foundSubject.professor,
+				subject: foundSubject._id,
 			});
 
 			return res.status(201).json(quiz);
 		} catch (error) {
 			return res.status(500).json({
-				error: 'Falha ao cadastrar Quiz',
+				error: 'Falha interna ao cadastrar Quiz',
 				details: error.message,
 			});
 		}
@@ -75,7 +94,7 @@ class UpdateQuiz {
 				return res.status(404).json({ error: 'Quiz não encontrado' });
 			}
 
-			if (quiz.is_published) {
+			if (!quiz.is_published) {
 				if (req.body.title) {
 					updates.title = req.body.title;
 				}
@@ -85,8 +104,12 @@ class UpdateQuiz {
 				if (req.body.release_date) {
 					updates.release_date = req.body.release_date;
 				}
-				if (req.body.subjects) {
-					updates.subjects = req.body.subjects; //pegar o id do professor pelo is salvo na subject
+				if (req.body.subject) {
+					updates.subject = req.body.subject;
+					const foundSubject = await Subject.findById(
+						req.body.subject,
+					);
+					updates.professor = foundSubject.professor;
 				}
 
 				const updateQuiz = await Quiz.findByIdAndUpdate(id, updates, {

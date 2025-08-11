@@ -15,13 +15,11 @@ const QuizzesSchema = new Schema(
 			ref: 'users',
 			default: null,
 		},
-		subjects: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'subjects',
-				default: null,
-			},
-		],
+		subject: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Subjects',
+			default: null,
+		},
 	},
 	{ timestamps: true }, //função do mongoose que adiciona automaticamente o cretAt e updateAt
 );
