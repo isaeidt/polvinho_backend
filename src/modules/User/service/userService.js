@@ -5,8 +5,7 @@ import User from '../model/Users.js';
 class CreateProfessor {
 	async create(req, res) {
 		try {
-			const { email, registration, password_hash, name, subjects } =
-				req.body;
+			const { email, registration, name, subjects } = req.body;
 
 			if (await User.findOne({ email })) {
 				return res
@@ -25,16 +24,10 @@ class CreateProfessor {
 					.json({ error: 'Formato email invalido' });
 			}
 
-			if (password_hash !== registration) {
-				return res.status(400).json({
-					error: 'Primeira senha deve ser igual a matricula',
-				});
-			}
-
 			const user = await User.create({
 				name,
 				email,
-				password_hash,
+				password_hash: registration,
 				registration,
 				role: 'Professor',
 				subjects,
@@ -54,8 +47,7 @@ class CreateProfessor {
 class CreateAluno {
 	async create(req, res) {
 		try {
-			const { email, registration, password_hash, name, subjects } =
-				req.body;
+			const { email, registration, name, subjects } = req.body;
 
 			if (await User.findOne({ email })) {
 				return res
@@ -74,16 +66,10 @@ class CreateAluno {
 					.json({ error: 'Formato email invalido' });
 			}
 
-			if (password_hash !== registration) {
-				return res.status(400).json({
-					error: 'Primeira senha deve ser igual a matricula',
-				});
-			}
-
 			const user = await User.create({
 				name,
 				email,
-				password_hash,
+				password_hash: registration,
 				registration,
 				role: 'Aluno',
 				subjects,
