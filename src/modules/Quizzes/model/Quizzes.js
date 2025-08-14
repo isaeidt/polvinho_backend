@@ -8,7 +8,7 @@ const QuizzesSchema = new Schema(
 		is_published: { type: Boolean },
 		max_attempts: { type: Number, required: true },
 		time_minutes: { type: Number, required: true },
-		release_date: { type: Date, requeride: true },
+		release_date: { type: Date, requerid: true },
 		is_deleted: { type: Boolean },
 		professor: {
 			type: mongoose.Schema.Types.ObjectId,
