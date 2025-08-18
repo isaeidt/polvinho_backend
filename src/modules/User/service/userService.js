@@ -110,7 +110,9 @@ class GetUserById {
 class GetAllProfessor {
 	async get(_req, res) {
 		try {
-			const users = await User.find({ role: 'Professor' });
+			const users = await User.find({ role: 'Professor' }).populate(
+				'subjects',
+			);
 			return res.status(200).json(users);
 		} catch (error) {
 			return res.status(500).json({
@@ -124,7 +126,9 @@ class GetAllProfessor {
 class GetAllAluno {
 	async get(_req, res) {
 		try {
-			const users = await User.find({ role: 'Aluno' });
+			const users = await User.find({ role: 'Aluno' }).populate(
+				'subjects',
+			);
 			console.log('🚀 ~ getAllUsers ~ get ~ users:', users);
 			return res.status(200).json(users);
 		} catch (error) {
