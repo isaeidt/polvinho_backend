@@ -158,6 +158,9 @@ class UpdateUser {
 			if (req.body.email) {
 				updates.email = req.body.email;
 			}
+			if (req.body.registration) {
+				updates.registration = req.body.registration;
+			}
 
 			if (req.body.password_hash) {
 				if (req.body.password_hash !== user.registration) {
