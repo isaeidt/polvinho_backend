@@ -89,39 +89,34 @@ class UpdateQuiz {
 			const { id } = req.params;
 			const updates = {};
 			const quiz = await Quiz.findById(id);
+			console.log('🚀 ~ UpdateQuiz ~ update ~ quiz:', quiz);
 
 			if (!quiz) {
 				return res.status(404).json({ error: 'Quiz não encontrado' });
 			}
 
-			if (!quiz.is_published) {
-				if (req.body.title) {
-					updates.title = req.body.title;
-				}
-				if (req.body.max_attempts) {
-					updates.max_attempts = req.body.max_attempts;
-				}
-				if (req.body.release_date) {
-					updates.release_date = req.body.release_date;
-				}
-				if (req.body.subject) {
-					updates.subject = req.body.subject;
-					const foundSubject = await Subject.findById(
-						req.body.subject,
-					);
-					updates.professor = foundSubject.professor;
-				}
-
-				const updateQuiz = await Quiz.findByIdAndUpdate(id, updates, {
-					new: true,
-				});
-
-				return res.status(200).json(updateQuiz);
-			} else {
-				return res
-					.status(404)
-					.json({ error: 'Quiz não pode ser editado' });
+			if (req.body.title) {
+				updates.title = req.body.title;
 			}
+			if (req.body.max_attempts) {
+				updates.max_attempts = req.body.max_attempts;
+			}
+			if (req.body.release_date) {
+				updates.release_date = req.body.release_date;
+			}
+			if (req.body.is_published) {
+				updates.is_published = req.body.is_published;
+			}
+			if (req.body.subject) {
+				updates.subject = req.body.subject;
+				const foundSubject = await Subject.findById(req.body.subject);
+				updates.professor = foundSubject.professor;
+			}
+
+			const updateQuiz = await Quiz.findByIdAndUpdate(id, updates, {
+				new: true,
+			});
+			return res.status(200).json(updateQuiz);
 		} catch (error) {
 			return res.status(500).json({
 				error: 'Falha ao editar quiz',
