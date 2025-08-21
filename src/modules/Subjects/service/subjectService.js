@@ -67,7 +67,10 @@ class GetSubjectById {
 class GetAllSubject {
 	async get(_req, res) {
 		try {
-			const subjects = await Subject.find({});
+			const subjects = await Subject.find({}).populate(
+				'professor',
+				'name',
+			);
 			return res.status(200).json(subjects);
 		} catch (error) {
 			return res.status(500).json({
