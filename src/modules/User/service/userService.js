@@ -175,20 +175,43 @@ class UpdateUser {
 				);
 			}
 
+			// Em src/modules/User/service/userService.js, dentro da classe UpdateUser
+
 			if (req.body.subjects && user.role === 'Professor') {
-				const newSubjects = req.body.subjects || [];
+				const newSubjectIds = req.body.subjects || [];
+				const currentSubjectIds = user.subjects.map(s => s.toString());
+				const addedSubjects = newSubjectIds.filter(
+					id => !currentSubjectIds.includes(id),
+				);
+
+				if (addedSubjects.length > 0) {
+					const subjectsToUpdate = await Subject.find({
+						_id: { $in: addedSubjects },
+					});
+
+					for (const subject of subjectsToUpdate) {
+						if (
+							subject.professor &&
+							subject.professor.toString() !== id
+						) {
+							await User.findByIdAndUpdate(subject.professor, {
+								$pull: { subjects: subject._id },
+							});
+						}
+					}
+				}
 
 				await Subject.updateMany(
-					{ professor: id },
+					{ professor: id, _id: { $nin: newSubjectIds } },
 					{ professor: null },
 				);
 
-				updates.subjects = newSubjects;
-
 				await Subject.updateMany(
-					{ _id: { $in: newSubjects } },
+					{ _id: { $in: newSubjectIds } },
 					{ professor: id },
 				);
+
+				updates.subjects = newSubjectIds;
 			} else if (req.body.subjects) {
 				updates.subjects = req.body.subjects;
 			}
