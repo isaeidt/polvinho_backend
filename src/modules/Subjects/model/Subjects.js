@@ -8,7 +8,7 @@ const SubjectsSchema = new Schema(
 		is_deleted: { type: Boolean },
 		professor: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'users',
+			ref: 'User',
 			default: null,
 		},
 	},
