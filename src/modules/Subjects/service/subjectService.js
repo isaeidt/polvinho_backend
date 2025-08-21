@@ -91,25 +91,20 @@ class UpdateSubject {
 				updates.name = req.body.name;
 			}
 			if (req.body.professor) {
-				updates.professor = req.body.professor;
+				const newProfessorId = req.body.professor;
 				const subject = await Subject.findById(id);
+
 				if (subject.professor) {
-					const professor = await User.findById(subject.professor);
-
-					await User.updateMany({ subjects: id }, { subjects: null });
-
-					const result = await User.findByIdAndUpdate(
-						professor._id,
-						{ $push: { subjects: subject } },
-						{ new: true },
-					);
-
-					if (!result) {
-						return res.status(400).json({
-							error: 'Não possui professor',
-						});
-					}
+					await User.findByIdAndUpdate(subject.professor, {
+						$pull: { subjects: id },
+					});
 				}
+
+				await User.findByIdAndUpdate(newProfessorId, {
+					$addToSet: { subjects: id },
+				});
+
+				updates.professor = newProfessorId;
 			}
 
 			const updateSubject = await Subject.findByIdAndUpdate(id, updates, {
