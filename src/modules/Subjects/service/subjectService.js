@@ -96,9 +96,11 @@ class UpdateSubject {
 				if (subject.professor) {
 					const professor = await User.findById(subject.professor);
 
+					await User.updateMany({ subjects: id }, { subjects: null });
+
 					const result = await User.findByIdAndUpdate(
 						professor._id,
-						{ $push: { subjects: id } },
+						{ $push: { subjects: subject } },
 						{ new: true },
 					);
 
