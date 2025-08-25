@@ -72,7 +72,10 @@ class GetQuizById {
 class GetAllQuiz {
 	async get(_req, res) {
 		try {
-			const quiz = await Quiz.find({}).populate('subject');
+			const quiz = await Quiz.find({}).populate(
+				'subject',
+				'release_date',
+			);
 			return res.status(200).json(quiz);
 		} catch (error) {
 			return res.status(500).json({
