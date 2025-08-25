@@ -12,7 +12,51 @@ import {
 //não adicionei as validações ainda!! mas tem que colocar o verifyToken e verifyRole
 
 export const createProfessorController = async (req, res) => {
-	return await createProfessor.create(req, res);
+	try {
+		const { email, registration, name, subjects } = req.body;
+
+		if (!name || !email || !registration || !subjects) {
+			return res.status(400).json({
+				error: 'Todos os campos são obrigatórios: nome, email, matrícula e disciplinas.',
+			});
+		}
+
+		if (typeof name !== 'string' || name.trim() === '') {
+			return res
+				.status(400)
+				.json({ error: 'O nome deve ser um texto não vazio.' });
+		}
+		if (!Array.isArray(subjects) || subjects.length === 0) {
+			return res.status(400).json({
+				error: 'As disciplinas devem ser uma lista não vazia.',
+			});
+		}
+
+		const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!regexEmail.test(email)) {
+			return res
+				.status(400)
+				.json({ error: 'Formato de e-mail inválido.' });
+		}
+
+		const professor = await createProfessor.execute({
+			email,
+			registration,
+			name,
+			subjects,
+		});
+
+		return res.status(201).json(professor);
+	} catch (error) {
+		if (error.message.includes('em uso')) {
+			return res.status(400).json({ error: error.message });
+		}
+
+		return res.status(500).json({
+			error: 'Falha ao registrar professor.',
+			details: error.message,
+		});
+	}
 };
 export const createAlunoController = async (req, res) => {
 	return await createAluno.create(req, res);
