@@ -26,11 +26,6 @@ export const createProfessorController = async (req, res) => {
 				.status(400)
 				.json({ error: 'O nome deve ser um texto não vazio.' });
 		}
-		if (!Array.isArray(subjects) || subjects.length === 0) {
-			return res.status(400).json({
-				error: 'As disciplinas devem ser uma lista não vazia.',
-			});
-		}
 
 		const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!regexEmail.test(email)) {
@@ -59,7 +54,46 @@ export const createProfessorController = async (req, res) => {
 	}
 };
 export const createAlunoController = async (req, res) => {
-	return await createAluno.create(req, res);
+	try {
+		const { email, registration, name, subjects } = req.body;
+
+		if (!name || !email || !registration || !subjects) {
+			return res.status(400).json({
+				error: 'Todos os campos são obrigatórios: nome, email, matrícula e disciplinas.',
+			});
+		}
+
+		if (typeof name !== 'string' || name.trim() === '') {
+			return res
+				.status(400)
+				.json({ error: 'O nome deve ser um texto não vazio.' });
+		}
+
+		const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!regexEmail.test(email)) {
+			return res
+				.status(400)
+				.json({ error: 'Formato de e-mail inválido.' });
+		}
+
+		const aluno = await createAluno.execute({
+			email,
+			registration,
+			name,
+			subjects,
+		});
+
+		return res.status(201).json(aluno);
+	} catch (error) {
+		if (error.message.includes('em uso')) {
+			return res.status(400).json({ error: error.message });
+		}
+
+		return res.status(500).json({
+			error: 'Falha ao registrar aluno.',
+			details: error.message,
+		});
+	}
 };
 
 export const getUserByIdController = async (req, res) => {

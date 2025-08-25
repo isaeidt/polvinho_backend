@@ -28,43 +28,31 @@ class CreateProfessor {
 
 class CreateAluno {
 	async create(req, res) {
-		try {
-			const { email, registration, name, subjects } = req.body;
+		const { email, registration, name, subjects } = req.body;
 
-			if (await User.findOne({ email })) {
-				return res
-					.status(400)
-					.json({ error: 'Este e-mail já está em uso' });
-			}
-			if (await User.findOne({ registration })) {
-				return res
-					.status(400)
-					.json({ error: 'Esta matricula já está em uso' });
-			}
-			const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!regexEmail.test(email)) {
-				return res
-					.status(400)
-					.json({ error: 'Formato email invalido' });
-			}
-
-			const user = await User.create({
-				name,
-				email,
-				password_hash: registration,
-				registration,
-				role: 'Aluno',
-				subjects,
-			});
-
-			user.password_hash = undefined;
-			return res.status(201).json(user);
-		} catch (error) {
-			return res.status(500).json({
-				error: 'Falha ao registrar usuário',
-				details: error.message,
-			});
+		if (await User.findOne({ email })) {
+			return res
+				.status(400)
+				.json({ error: 'Este e-mail já está em uso' });
 		}
+		if (await User.findOne({ registration })) {
+			return res
+				.status(400)
+				.json({ error: 'Esta matricula já está em uso' });
+		}
+
+		const user = await User.create({
+			name,
+			email,
+			password_hash: registration,
+			registration,
+			role: 'Aluno',
+			subjects,
+		});
+
+		user.password_hash = undefined;
+
+		return user;
 	}
 }
 
@@ -156,8 +144,6 @@ class UpdateUser {
 					salt,
 				);
 			}
-
-			// Em src/modules/User/service/userService.js, dentro da classe UpdateUser
 
 			if (req.body.subjects && user.role === 'Professor') {
 				const newSubjectIds = req.body.subjects || [];
