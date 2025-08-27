@@ -4,8 +4,14 @@ import Quiz from '../model/Quizzes.js';
 class CreateQuiz {
 	async create(req, res) {
 		try {
-			const { title, max_attempts, time_minutes, release_date, subject } =
-				req.body;
+			const {
+				title,
+				max_attempts,
+				time_minutes,
+				release_date,
+				subject,
+				is_published,
+			} = req.body;
 
 			if (!subject) {
 				return res.status(400).json({
@@ -37,6 +43,7 @@ class CreateQuiz {
 				release_date,
 				professor: foundSubject.professor,
 				subject: foundSubject._id,
+				is_published,
 			});
 
 			return res.status(201).json(quiz);
