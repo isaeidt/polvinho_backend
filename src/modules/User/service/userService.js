@@ -3,56 +3,86 @@ import Subject from '../../Subjects/model/Subjects.js';
 import User from '../model/Users.js';
 
 class CreateProfessor {
-	async execute({ email, registration, name, subjects }) {
-		if (await User.findOne({ email })) {
-			throw new Error('Este e-mail já está em uso');
+	async create(req, res) {
+		try {
+			const { email, registration, name, subjects } = req.body;
+
+			if (await User.findOne({ email })) {
+				return res
+					.status(400)
+					.json({ error: 'Este e-mail já está em uso' });
+			}
+			if (await User.findOne({ registration })) {
+				return res
+					.status(400)
+					.json({ error: 'Esta matricula já está em uso' });
+			}
+			const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!regexEmail.test(email)) {
+				return res
+					.status(400)
+					.json({ error: 'Formato email invalido' });
+			}
+
+			const user = await User.create({
+				name,
+				email,
+				password_hash: registration,
+				registration,
+				role: 'Professor',
+				subjects,
+			});
+
+			user.password_hash = undefined;
+			return res.status(201).json(user);
+		} catch (error) {
+			return res.status(500).json({
+				error: 'Falha ao registrar usuário',
+				details: error.message,
+			});
 		}
-		if (await User.findOne({ registration })) {
-			throw new Error('Esta matrícula já está em uso');
-		}
-
-		const user = await User.create({
-			name,
-			email,
-			password_hash: registration,
-			registration,
-			role: 'Professor',
-			subjects,
-		});
-
-		user.password_hash = undefined;
-
-		return user;
 	}
 }
 
 class CreateAluno {
 	async create(req, res) {
-		const { email, registration, name, subjects } = req.body;
+		try {
+			const { email, registration, name, subjects } = req.body;
 
-		if (await User.findOne({ email })) {
-			return res
-				.status(400)
-				.json({ error: 'Este e-mail já está em uso' });
+			if (await User.findOne({ email })) {
+				return res
+					.status(400)
+					.json({ error: 'Este e-mail já está em uso' });
+			}
+			if (await User.findOne({ registration })) {
+				return res
+					.status(400)
+					.json({ error: 'Esta matricula já está em uso' });
+			}
+			const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!regexEmail.test(email)) {
+				return res
+					.status(400)
+					.json({ error: 'Formato email invalido' });
+			}
+
+			const user = await User.create({
+				name,
+				email,
+				password_hash: registration,
+				registration,
+				role: 'Aluno',
+				subjects,
+			});
+
+			user.password_hash = undefined;
+			return res.status(201).json(user);
+		} catch (error) {
+			return res.status(500).json({
+				error: 'Falha ao registrar usuário',
+				details: error.message,
+			});
 		}
-		if (await User.findOne({ registration })) {
-			return res
-				.status(400)
-				.json({ error: 'Esta matricula já está em uso' });
-		}
-
-		const user = await User.create({
-			name,
-			email,
-			password_hash: registration,
-			registration,
-			role: 'Aluno',
-			subjects,
-		});
-
-		user.password_hash = undefined;
-
-		return user;
 	}
 }
 
@@ -145,6 +175,8 @@ class UpdateUser {
 				);
 			}
 
+			// Em src/modules/User/service/userService.js, dentro da classe UpdateUser
+
 			if (req.body.subjects && user.role === 'Professor') {
 				const newSubjectIds = req.body.subjects || [];
 				const currentSubjectIds = user.subjects.map(s => s.toString());
@@ -173,7 +205,6 @@ class UpdateUser {
 					{ professor: id, _id: { $nin: newSubjectIds } },
 					{ professor: null },
 				);
-
 				await Subject.updateMany(
 					{ _id: { $in: newSubjectIds } },
 					{ professor: id },
