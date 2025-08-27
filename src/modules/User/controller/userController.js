@@ -12,10 +12,10 @@ import {
 //não adicionei as validações ainda!! mas tem que colocar o verifyToken e verifyRole
 
 export const createProfessorController = async (req, res) => {
-	return await createProfessor.get(req, res);
+	return await createProfessor.create(req, res);
 };
 export const createAlunoController = async (req, res) => {
-	return await createAluno.get(req, res);
+	return await createAluno.create(req, res);
 };
 
 export const getUserByIdController = async (req, res) => {
